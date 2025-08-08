@@ -2,11 +2,12 @@
     "name": "Watch Tomorrow",
     "version": "0.0.0.1",
     "manifest_version": 3,
-    "description": "Only watch YouTube videos a day after adding them to your Watch Later list. Blocks everything else — for focused, intentional viewing.",
+    "description": "Add a Youtube video to the Watch Later playlist and watch it tomorrow at the earliest. Prevent instant watching.",
     "action": {
         "default_title": "Watch Tomorrow"
     },
     "permissions": [
+        "storage",
         "tabs"
     ],
     "host_permissions": [
@@ -14,5 +15,12 @@
     ],
     "background": {
       "service_worker": "background.js"
-    }
+    },
+    "content_scripts": [
+      {
+        "matches": ["https://www.youtube.com/*"],
+        "run_at": "document_end",
+        "js": ["watch_later_scraper.js"]
+      }
+    ]
 }
