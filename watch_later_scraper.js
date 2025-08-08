@@ -8,7 +8,8 @@ const waitForElement = (selector, timeout = 5000) => {
       if (el) return resolve(el);
 
       elapsed += interval;
-      if (elapsed >= timeout) return reject(new Error(`Timeout waiting for: ${selector}`));
+      if (elapsed >= timeout)
+        return reject(new Error(`Timeout waiting for: ${selector}`));
       setTimeout(check, interval);
     };
 
@@ -22,7 +23,7 @@ const scrapeWatchLater = async () => {
     const videoIds = Array.from(
       document.querySelectorAll("ytd-playlist-video-renderer a#video-title")
     )
-      .map(a => {
+      .map((a) => {
         try {
           return new URL(a.href).searchParams.get("v");
         } catch {
@@ -31,22 +32,22 @@ const scrapeWatchLater = async () => {
       })
       .filter(Boolean);
 
-      return videoIds;
+    return videoIds;
   } catch (err) {
     console.error("Failed to find Watch Later videos:", err);
   }
 };
 
 const handleWatchLater = async () => {
-    if (window.location.href.includes("playlist?list=WL")) {
-        const videoIds = await scrapeWatchLater();
-        if (videoIds && videoIds.length) {
-            chrome.runtime.sendMessage({
-                type: "SET_ALLOWED_VIDEO_IDS",
-                allowedVideoIds: videoIds,
-            });
-        }
+  if (window.location.href.includes("playlist?list=WL")) {
+    const videoIds = await scrapeWatchLater();
+    if (videoIds && videoIds.length) {
+      chrome.runtime.sendMessage({
+        type: "SET_ALLOWED_VIDEO_IDS",
+        allowedVideoIds: videoIds,
+      });
     }
+  }
 };
 
 // Observe URL changes via YouTube's SPA behavior
