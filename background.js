@@ -1,29 +1,35 @@
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === "SET_ALLOWED_VIDEO_IDS") {
-    chrome.storage.session.set(
-      { allowedVideoIds: message.allowedVideoIds },
-      () => {}
-    );
-  }
-});
-
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.url) {
-    const url = new URL(changeInfo.url);
-
-    if (
-      url.hostname === "www.youtube.com" &&
-      (url.pathname === "/watch" || url.pathname.startsWith("/shorts"))
-    ) {
-      const videoId = url.searchParams.get("v");
-      console.log("video id", videoId);
-      chrome.storage.session.get("allowedVideoIds", (result) => {
-        const allowed = result.allowedVideoIds || [];
-        console.log("allowed", allowed);
-        if (!allowed.includes(videoId)) {
-          chrome.tabs.update(tabId, { url: "https://www.youtube.com/" });
-        }
-      });
-    }
+  if (!changeInfo.url) {
+    return;
   }
+
+  const url = new URL(changeInfo.url);
+  const isYoutube = url.hostname === "www.youtube.com";
+  const isVideoPage =
+    url.pathname === "/watch" || url.pathname.startsWith("/shorts");
+  if (!isYoutube || !isVideoPage) {
+    return;
+  }
+
+  const videoId = url.searchParams.get("v");
+  if (!videoId) {
+    return;
+  }
+
+  chrome.storage.local
+    .get(["watchLaterVideos"])
+    .then(({ watchLaterVideos = [] }) => {
+      console.log("result", watchLaterVideos);
+      if (!watchLaterVideos.length) {
+        return;
+      }
+
+      const currentDate = new Date().toISOString().split("T")[0];
+      const watchLaterVideo = watchLaterVideos.find(
+        (x) => x.videoId === videoId
+      );
+      if (!watchLaterVideo || watchLaterVideo.seenInWatchLaterDate === currentDate) {
+        chrome.tabs.update(tabId, { url: "https://www.youtube.com/" });
+      }
+    });
 });

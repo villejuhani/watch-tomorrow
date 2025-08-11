@@ -38,16 +38,50 @@ const scrapeWatchLater = async () => {
   }
 };
 
-const handleWatchLater = async () => {
-  if (window.location.href.includes("playlist?list=WL")) {
-    const videoIds = await scrapeWatchLater();
-    if (videoIds && videoIds.length) {
-      chrome.runtime.sendMessage({
-        type: "SET_ALLOWED_VIDEO_IDS",
-        allowedVideoIds: videoIds,
-      });
-    }
+const filterVideoIdsAlreadyInStorage = async (videoIds) => {
+  const result = await chrome.storage.local.get("watchLaterVideos");
+  console.log("videods", videoIds);
+  console.log("watchlatervideos", result);
+
+  const currentVideos = result.watchLaterVideos || [];
+  if (!currentVideos.length) {
+    return videoIds;
   }
+  console.log("watchlatervideos", currentVideos);
+
+  const currentVideoIds = currentVideos.map((video) => video.videoId);
+  console.log("watchlatervideos", currentVideoIds);
+
+  return videoIds.filter((id) => !currentVideoIds.includes(id));
+};
+
+const handleWatchLaterOpened = async () => {
+  if (!window.location.href.includes("playlist?list=WL")) {
+    return;
+  }
+
+  const videoIds = await scrapeWatchLater();
+  if (!videoIds || !videoIds.length) {
+    return;
+  }
+
+  const filteredVideoIds = await filterVideoIdsAlreadyInStorage(videoIds);
+  if (!filteredVideoIds || !filteredVideoIds.length) {
+    return;
+  }
+
+  const result = await chrome.storage.local.get("watchLaterVideos");
+  const currentVideos = result.watchLaterVideos || [];
+
+  const currentDate = new Date().toISOString().split("T")[0];
+  const newEntries = filteredVideoIds.map((videoId) => ({
+    videoId,
+    seenInWatchLaterDate: currentDate,
+  }));
+
+  await chrome.storage.local.set({
+    watchLaterVideos: [...currentVideos, ...newEntries],
+  });
 };
 
 // Observe URL changes via YouTube's SPA behavior
@@ -56,9 +90,9 @@ new MutationObserver(() => {
   const currentUrl = location.href;
   if (currentUrl !== lastUrl) {
     lastUrl = currentUrl;
-    handleWatchLater();
+    handleWatchLaterOpened();
   }
 }).observe(document, { subtree: true, childList: true });
 
 // Run initially in case we landed directly to watch later page
-handleWatchLater();
+handleWatchLaterOpened();
