@@ -6,7 +6,7 @@
   "action": {
     "default_title": "Watch Tomorrow"
   },
-  "permissions": ["storage", "tabs"],
+  "permissions": ["storage", "tabs", "webNavigation"],
   "host_permissions": ["https://www.youtube.com/*"],
   "background": {
     "service_worker": "background.js"

@@ -1,10 +1,32 @@
+// ----- handle navigation to Watch Later playlist -----
+const sendMessageIfWatchLaterWasOpened = (tabId, url) => {
+  if (url.includes("playlist?list=WL")) {
+    chrome.tabs.sendMessage(tabId, { type: "WATCH_LATER_OPENED" });
+  }
+};
+
+chrome.webNavigation.onCompleted.addListener(
+  async (details) => {
+    sendMessageIfWatchLaterWasOpened(details.tabId, details.url);
+  },
+  { url: [{ hostContains: "youtube.com" }] }
+);
+
+chrome.webNavigation.onHistoryStateUpdated.addListener(
+  (details) => {
+    sendMessageIfWatchLaterWasOpened(details.tabId, details.url);
+  },
+  { url: [{ hostContains: "youtube.com" }] }
+);
+
+// ----- block watching YouTube videos -----
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (!changeInfo.url) {
     return;
   }
 
   const url = new URL(changeInfo.url);
-  if (url.hostname !== "www.youtube.com"){
+  if (url.hostname !== "www.youtube.com") {
     return;
   }
 
@@ -12,7 +34,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     chrome.tabs.update(tabId, { url: "https://www.youtube.com/" });
     return;
   }
-  
+
   if (url.pathname !== "/watch") {
     return;
   }
@@ -35,7 +57,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       const watchLaterVideo = watchLaterVideos.find(
         (x) => x.videoId === videoId
       );
-      if (!watchLaterVideo || watchLaterVideo.seenInWatchLaterDate === currentDate) {
+      if (
+        !watchLaterVideo ||
+        watchLaterVideo.seenInWatchLaterDate === currentDate
+      ) {
         chrome.tabs.update(tabId, { url: "https://www.youtube.com/" });
       }
     });

@@ -39,10 +39,6 @@ const scrapeWatchLater = async () => {
 };
 
 const handleWatchLaterOpened = async () => {
-  if (!window.location.href.includes("playlist?list=WL")) {
-    return;
-  }
-
   const videoIds = await scrapeWatchLater();
   if (!videoIds || !videoIds.length) {
     return;
@@ -51,15 +47,8 @@ const handleWatchLaterOpened = async () => {
   await syncWatchLaterStorage(videoIds);
 };
 
-// Observe URL changes via YouTube's SPA behavior
-let lastUrl = location.href;
-new MutationObserver(() => {
-  const currentUrl = location.href;
-  if (currentUrl !== lastUrl) {
-    lastUrl = currentUrl;
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (msg.type === "WATCH_LATER_OPENED") {
     handleWatchLaterOpened();
   }
-}).observe(document, { subtree: true, childList: true });
-
-// Run initially in case we landed directly to watch later page
-handleWatchLaterOpened();
+});
