@@ -15,7 +15,10 @@
     {
       "matches": ["https://www.youtube.com/*"],
       "run_at": "document_end",
-      "js": ["watch_later_scraper.js"]
+      "js": [
+        "watch_later_storage.js",
+        "watch_later_scraper.js"
+      ]
     }
   ]
 }
