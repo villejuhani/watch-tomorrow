@@ -48,7 +48,7 @@ const handleWatchLaterOpened = async () => {
     return;
   }
 
-  await addVideosToWatchLaterStorage(videoIds);
+  await syncWatchLaterStorage(videoIds);
 };
 
 // Observe URL changes via YouTube's SPA behavior
