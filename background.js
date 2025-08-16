@@ -4,16 +4,16 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   }
 
   const url = new URL(changeInfo.url);
-  const isYoutube = url.hostname === "www.youtube.com";
-  if (!isYoutube){
+  if (url.hostname !== "www.youtube.com"){
     return;
   }
 
   if (url.pathname.startsWith("/shorts")) {
     chrome.tabs.update(tabId, { url: "https://www.youtube.com/" });
+    return;
   }
   
-  if (!url.pathname === "/watch") {
+  if (url.pathname !== "/watch") {
     return;
   }
 
@@ -27,6 +27,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     .then(({ watchLaterVideos = [] }) => {
       console.log("result", watchLaterVideos);
       if (!watchLaterVideos.length) {
+        chrome.tabs.update(tabId, { url: "https://www.youtube.com/" });
         return;
       }
 
