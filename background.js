@@ -5,9 +5,15 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
   const url = new URL(changeInfo.url);
   const isYoutube = url.hostname === "www.youtube.com";
-  const isVideoPage =
-    url.pathname === "/watch" || url.pathname.startsWith("/shorts");
-  if (!isYoutube || !isVideoPage) {
+  if (!isYoutube){
+    return;
+  }
+
+  if (url.pathname.startsWith("/shorts")) {
+    chrome.tabs.update(tabId, { url: "https://www.youtube.com/" });
+  }
+  
+  if (!url.pathname === "/watch") {
     return;
   }
 
