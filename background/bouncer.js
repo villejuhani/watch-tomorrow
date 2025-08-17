@@ -26,7 +26,6 @@ export const handleViewYouTubeVideo = () => {
     const { watchLaterVideos = [] } = await chrome.storage.local.get(
       "watchLaterVideos"
     );
-    console.log("result", watchLaterVideos);
     if (!watchLaterVideos.length) {
       chrome.tabs.update(tabId, { url: "https://www.youtube.com/" });
       return;
