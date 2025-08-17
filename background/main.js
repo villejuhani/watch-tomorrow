@@ -1,5 +1,8 @@
-import { restrictViewingYouTubeVideos } from "./bouncer.js";
-import { handleAddVideoToWatchLaterPlaylist } from "./watch_later_storage.js";
+import { handleViewYouTubeVideo } from "./bouncer.js";
+import { handleAddToWatchLater } from "./add_video_handler.js";
+import { handleFullPageReload, handleHistoryStateUpdate } from "./navigation_handler.js";
 
-restrictViewingYouTubeVideos();
-handleAddVideoToWatchLaterPlaylist();
+handleViewYouTubeVideo();
+handleAddToWatchLater();
+handleFullPageReload();
+handleHistoryStateUpdate();

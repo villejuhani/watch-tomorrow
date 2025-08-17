@@ -1,4 +1,4 @@
-export const restrictViewingYouTubeVideos = () => {
+export const handleViewYouTubeVideo = () => {
   chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     if (!changeInfo.url) {
       return;

@@ -1,4 +1,4 @@
-export const handleAddVideoToWatchLaterPlaylist = () => {
+export const handleAddToWatchLater = () => {
   chrome.webRequest.onBeforeRequest.addListener(
     async (details) => {
       if (!details.url.includes("browse/edit_playlist")) {

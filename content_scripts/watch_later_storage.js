@@ -1,4 +1,7 @@
-const filterVideoIdsAlreadyInStorage = (watchLaterPageVideoIds, storedVideos) => {
+const filterVideoIdsAlreadyInStorage = (
+  watchLaterPageVideoIds,
+  storedVideos
+) => {
   const storedIds = storedVideos.map((video) => video.videoId);
   return watchLaterPageVideoIds.filter((id) => !storedIds.includes(id));
 };
@@ -16,8 +19,7 @@ const saveVideosToStorage = async (newVideoIds, syncedVideos = []) => {
 };
 
 const syncWatchLaterStorage = async (watchLaterPageVideoIds) => {
-  const result = await chrome.storage.local.get("watchLaterVideos");
-  const storedVideos = result.watchLaterVideos || [];
+  const { storedVideos = [] } = await chrome.storage.local.get("watchLaterVideos");
 
   // Remove videos not in Watch Later playlist
   const syncedVideos = storedVideos.filter((video) =>
