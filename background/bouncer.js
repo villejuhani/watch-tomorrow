@@ -1,4 +1,10 @@
 export const handleViewYouTubeVideo = () => {
+  const TOAST_MESSAGES = {
+    shortsBlocked: "The extension blocks watching shorts.",
+    videoBlocked:
+      "The extension blocked viewing the video. Add the video to your watch later playlist and watch it tomorrow or later",
+  };
+
   chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     if (!changeInfo.url) {
       return;
@@ -11,6 +17,7 @@ export const handleViewYouTubeVideo = () => {
 
     if (url.pathname.startsWith("/shorts")) {
       chrome.tabs.update(tabId, { url: "https://www.youtube.com/" });
+      showToast(TOAST_MESSAGES.shortsBlocked);
       return;
     }
 
@@ -28,6 +35,7 @@ export const handleViewYouTubeVideo = () => {
     );
     if (!watchLaterVideos.length) {
       chrome.tabs.update(tabId, { url: "https://www.youtube.com/" });
+      showToast(TOAST_MESSAGES.videoBlocked);
       return;
     }
 
@@ -38,6 +46,16 @@ export const handleViewYouTubeVideo = () => {
       watchLaterVideo.seenInWatchLaterDate === currentDate
     ) {
       chrome.tabs.update(tabId, { url: "https://www.youtube.com/" });
+      showToast(TOAST_MESSAGES.videoBlocked);
     }
+  });
+};
+
+const showToast = (message) => {
+  chrome.notifications.create({
+    type: "basic",
+    iconUrl: chrome.runtime.getURL("watch_tomorrow.png"),
+    title: "Watch Tomorrow",
+    message: message,
   });
 };
