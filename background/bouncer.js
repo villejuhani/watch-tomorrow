@@ -31,7 +31,7 @@ export const handleViewYouTubeVideo = () => {
       return;
     }
 
-    const currentDate = new Date().toISOString().split("T")[0];
+    const currentDate = new Date().toLocaleDateString();
     const watchLaterVideo = watchLaterVideos.find((x) => x.videoId === videoId);
     if (
       !watchLaterVideo ||

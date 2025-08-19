@@ -7,7 +7,7 @@ const filterVideoIdsAlreadyInStorage = (
 };
 
 const saveVideosToStorage = async (newVideoIds, syncedVideos = []) => {
-  const currentDate = new Date().toISOString().split("T")[0];
+  const currentDate = new Date().toLocaleDateString();
   const newEntries = newVideoIds.map((videoId) => ({
     videoId,
     seenInWatchLaterDate: currentDate,

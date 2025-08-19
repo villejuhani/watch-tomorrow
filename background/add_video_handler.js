@@ -30,7 +30,7 @@ export const handleAddToWatchLater = () => {
           return;
         }
 
-        const currentDate = new Date().toISOString().split("T")[0];
+        const currentDate = new Date().toLocaleDateString();
         await chrome.storage.local.set({
           watchLaterVideos: [
             ...watchLaterVideos,
