@@ -2,7 +2,7 @@
   "name": "Watch Tomorrow",
   "version": "0.0.0.1",
   "manifest_version": 3,
-  "description": "Add a Youtube video to the Watch Later playlist and watch it tomorrow at the earliest. Prevent instant watching.",
+  "description": "Only allows wathing YouTube videos that were added to Watch Later playlist yesterday or earlier. Prevents instant and endless watching.",
   "action": {
     "default_title": "Watch Tomorrow"
   },
