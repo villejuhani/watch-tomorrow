@@ -1,8 +1,8 @@
 {
   "name": "Watch Tomorrow",
-  "version": "0.0.0.1",
+  "version": "1.0.0.0",
   "manifest_version": 3,
-  "description": "Only allows wathing YouTube videos that were added to Watch Later playlist yesterday or earlier. Prevents instant and endless watching.",
+  "description": "Only allows watching YouTube videos that were added to Watch Later yesterday or earlier. Prevents instant and endless watching.",
   "action": {
     "default_title": "Watch Tomorrow"
   },
