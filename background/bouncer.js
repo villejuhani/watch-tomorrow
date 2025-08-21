@@ -54,7 +54,7 @@ export const handleViewYouTubeVideo = () => {
 const showToast = (message) => {
   chrome.notifications.create({
     type: "basic",
-    iconUrl: chrome.runtime.getURL("watch_tomorrow.png"),
+    iconUrl: chrome.runtime.getURL("icons/watch_tomorrow.png"),
     title: "Watch Tomorrow",
     message: message,
   });
